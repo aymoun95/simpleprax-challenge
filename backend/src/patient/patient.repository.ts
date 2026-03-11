@@ -1,4 +1,9 @@
-import { Patient } from "@/types/index.js";
+export interface Patient {
+  id: string;
+  name: string;
+  email: string;
+  created_at: Date;
+}
 
 export class PatientRepository {
   private patients: Map<string, Patient> = new Map();

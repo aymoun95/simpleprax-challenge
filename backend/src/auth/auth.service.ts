@@ -1,6 +1,24 @@
 import { DoctorRepository } from "@/doctor/doctor.repository.js";
 import { PatientRepository } from "@/patient/patient.repository.js";
-import { AuthResponse, SigninRequest, SignupRequest } from "@/types/index.js";
+
+export type UserRole = "patient" | "doctor";
+
+export interface SignupRequest {
+  name: string;
+  role: UserRole;
+}
+
+export interface SigninRequest {
+  name: string;
+  role: UserRole;
+}
+
+export interface AuthResponse {
+  id: string;
+  name: string;
+  role: UserRole;
+  created_at: Date;
+}
 
 export class AuthService {
   private patientRepository: PatientRepository;

@@ -1,6 +1,7 @@
 "use client";
 
 import { Controller, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import * as z from "zod";
 
@@ -28,40 +29,44 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { authSchema } from "@/schemas/auth";
+import { authSchema } from "@/auth/auth.schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-export function AuthForm() {
+export function SignInForm() {
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof authSchema>>({
     resolver: zodResolver(authSchema),
     defaultValues: {
       name: "",
-      role: "patient",
+      role: "doctor",
     },
   });
 
-  function onSubmit(data: z.infer<typeof authSchema>) {
-    toast("Account created successfully!", {});
+  function onSubmit() {
+    toast("Signed in successfully!", {
+      position: "bottom-right",
+    });
+    navigate("/dashboard");
   }
 
   return (
     <Card className="w-full sm:max-w-md">
       <CardHeader>
-        <CardTitle>Sign Up</CardTitle>
-        <CardDescription>Create your account to continue</CardDescription>
+        <CardTitle>Sign In</CardTitle>
+        <CardDescription>Enter your details to continue</CardDescription>
       </CardHeader>
       <CardContent>
-        <form id="form-rhf-demo" onSubmit={form.handleSubmit(onSubmit)}>
+        <form id="form-signin" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
             <Controller
               name="name"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-demo-title">Name</FieldLabel>
+                  <FieldLabel htmlFor="form-signin-title">Name</FieldLabel>
                   <Input
                     {...field}
-                    id="form-rhf-demo-title"
+                    id="form-signin-title"
                     aria-invalid={fieldState.invalid}
                     placeholder="Enter your full name"
                     autoComplete="name"
@@ -77,10 +82,10 @@ export function AuthForm() {
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-demo-role">Role</FieldLabel>
+                  <FieldLabel htmlFor="form-signin-role">Role</FieldLabel>
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger
-                      id="form-rhf-demo-role"
+                      id="form-signin-role"
                       aria-invalid={fieldState.invalid}
                     >
                       <SelectValue placeholder="Select a role" />
@@ -99,15 +104,28 @@ export function AuthForm() {
           </FieldGroup>
         </form>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex flex-col gap-4 items-stretch">
         <Field orientation="horizontal">
-          <Button type="button" variant="outline" onClick={() => form.reset()}>
-            Reset
-          </Button>
-          <Button type="submit" form="form-rhf-demo">
-            Sign Up
+          <Button
+            type="submit"
+            form="form-signin"
+            className="w-full cursor-pointer"
+          >
+            Sign In
           </Button>
         </Field>
+
+        <p className="text-sm text-center text-muted-foreground">
+          Don't have an account?{" "}
+          <Button
+            type="button"
+            onClick={() => navigate("/signup")}
+            className="cursor-pointer"
+            variant="link"
+          >
+            Sign up
+          </Button>
+        </p>
       </CardFooter>
     </Card>
   );

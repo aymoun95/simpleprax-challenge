@@ -4,9 +4,9 @@ import {
   BrowserRouter as Router,
   Routes,
 } from "react-router-dom";
-import { Dashboard } from "./pages/Dashboard";
-import { SignIn } from "./pages/SignIn";
-import { SignUp } from "./pages/SignUp";
+import { SignIn } from "./auth/signin/SignIn";
+import { SignUp } from "./auth/signup/SignUp";
+import { Dashboard } from "./dashboard/Dashboard";
 
 function App() {
   return (
