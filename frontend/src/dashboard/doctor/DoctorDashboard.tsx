@@ -4,14 +4,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import type { Feedback } from "../patient/PatientDashboard";
+import { FeedbackList, type GeneralFeedback } from "./FeedbackList";
 
 export type Doctor = {
   id: string;
@@ -19,12 +12,6 @@ export type Doctor = {
   created_at: Date;
   specialty: string;
   role: "doctor";
-};
-
-type GeneralFeedback = Feedback & {
-  id: string;
-  patient_id: string;
-  created_at: Date;
 };
 
 export function DoctorDashboard({
@@ -58,39 +45,7 @@ export function DoctorDashboard({
           </Button>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Your Feedback</CardTitle>
-            <CardDescription>
-              What patients are saying about you
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {feedbacks.length === 0 ? (
-              <p className="text-gray-500 italic">No feedback received yet.</p>
-            ) : (
-              <div className="space-y-4">
-                {feedbacks.map((fb) => (
-                  <div
-                    key={fb.id}
-                    className="p-4 rounded-lg bg-gray-50 border border-gray-100"
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="font-semibold text-lg">
-                        {fb.rating} Stars
-                      </div>
-                    </div>
-                    <p className="text-gray-700">{fb.comment}</p>
-                    <p className="text-xs text-gray-400 mt-2">
-                      Patient ID: {fb.patient_id} •{" "}
-                      {new Date(fb.created_at).toLocaleDateString()}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <FeedbackList feedbacks={feedbacks} />
       </div>
     </div>
   );
