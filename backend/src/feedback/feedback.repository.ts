@@ -8,37 +8,37 @@ export interface Feedback {
 }
 
 export class FeedbackRepository {
-  private feedbacks: Map<string, Feedback> = new Map();
-  private idCounter = 1;
+  private static feedbacks: Map<string, Feedback> = new Map();
+  private static idCounter = 1;
 
   create(feedbackData: Omit<Feedback, "id" | "created_at">): Feedback {
-    const id = `feedback_${this.idCounter++}`;
+    const id = `feedback_${FeedbackRepository.idCounter++}`;
     const feedback: Feedback = {
       id,
       ...feedbackData,
       created_at: new Date(),
     };
-    this.feedbacks.set(id, feedback);
+    FeedbackRepository.feedbacks.set(id, feedback);
     return feedback;
   }
 
   findById(id: string): Feedback | undefined {
-    return this.feedbacks.get(id);
+    return FeedbackRepository.feedbacks.get(id);
   }
 
   findByDoctorId(doctorId: string): Feedback[] {
-    return Array.from(this.feedbacks.values()).filter(
+    return Array.from(FeedbackRepository.feedbacks.values()).filter(
       (f) => f.doctor_id === doctorId,
     );
   }
 
   findByPatientId(patientId: string): Feedback[] {
-    return Array.from(this.feedbacks.values()).filter(
+    return Array.from(FeedbackRepository.feedbacks.values()).filter(
       (f) => f.patient_id === patientId,
     );
   }
 
   findAll(): Feedback[] {
-    return Array.from(this.feedbacks.values());
+    return Array.from(FeedbackRepository.feedbacks.values());
   }
 }

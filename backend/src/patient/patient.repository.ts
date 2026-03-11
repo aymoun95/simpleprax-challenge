@@ -1,35 +1,35 @@
 export interface Patient {
   id: string;
   name: string;
-  email: string;
   created_at: Date;
 }
 
 export class PatientRepository {
-  private patients: Map<string, Patient> = new Map();
-  private idCounter = 1;
+  private static patients: Map<string, Patient> = new Map();
+  private static idCounter = 1;
 
   create(name: string): Patient {
-    const id = `patient_${this.idCounter++}`;
+    const id = `patient_${PatientRepository.idCounter++}`;
     const patient: Patient = {
       id,
       name,
-      email: `${name.toLowerCase().replace(/\s+/g, ".")}@patient.local`,
       created_at: new Date(),
     };
-    this.patients.set(id, patient);
+    PatientRepository.patients.set(id, patient);
     return patient;
   }
 
   findById(id: string): Patient | undefined {
-    return this.patients.get(id);
+    return PatientRepository.patients.get(id);
   }
 
   findByName(name: string): Patient | undefined {
-    return Array.from(this.patients.values()).find((p) => p.name === name);
+    return Array.from(PatientRepository.patients.values()).find(
+      (p) => p.name === name,
+    );
   }
 
   findAll(): Patient[] {
-    return Array.from(this.patients.values());
+    return Array.from(PatientRepository.patients.values());
   }
 }

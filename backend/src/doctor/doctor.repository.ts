@@ -6,30 +6,32 @@ export interface Doctor {
 }
 
 export class DoctorRepository {
-  private doctors: Map<string, Doctor> = new Map();
-  private idCounter = 1;
+  private static doctors: Map<string, Doctor> = new Map();
+  private static idCounter = 1;
 
   create(name: string, specialty: string = "General"): Doctor {
-    const id = `doctor_${this.idCounter++}`;
+    const id = `doctor_${DoctorRepository.idCounter++}`;
     const doctor: Doctor = {
       id,
       name,
       specialty,
       created_at: new Date(),
     };
-    this.doctors.set(id, doctor);
+    DoctorRepository.doctors.set(id, doctor);
     return doctor;
   }
 
   findById(id: string): Doctor | undefined {
-    return this.doctors.get(id);
+    return DoctorRepository.doctors.get(id);
   }
 
   findByName(name: string): Doctor | undefined {
-    return Array.from(this.doctors.values()).find((d) => d.name === name);
+    return Array.from(DoctorRepository.doctors.values()).find(
+      (d) => d.name === name,
+    );
   }
 
   findAll(): Doctor[] {
-    return Array.from(this.doctors.values());
+    return Array.from(DoctorRepository.doctors.values());
   }
 }

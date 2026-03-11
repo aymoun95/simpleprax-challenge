@@ -42,9 +42,38 @@ export function SignUpForm() {
     },
   });
 
-  function onSubmit() {
-    toast("Account created successfully!", {});
-    navigate("/dashboard");
+  async function onSubmit(data: z.infer<typeof authSchema>) {
+    try {
+      const response = await fetch("/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        return toast.error(errorData.error || "Failed to sign up", {
+          position: "bottom-right",
+        });
+      }
+
+      const responseData = await response.json();
+      localStorage.setItem("user", JSON.stringify(responseData));
+
+      toast.success("Account created successfully!", {
+        position: "bottom-right",
+      });
+      navigate("/dashboard");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "An error occurred",
+        {
+          position: "bottom-right",
+        },
+      );
+    }
   }
 
   return (

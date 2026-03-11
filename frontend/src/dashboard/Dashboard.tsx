@@ -1,73 +1,41 @@
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { DoctorDashboard, type Doctor } from "./doctor/DoctorDashboard";
+import { PatientDashboard, type Patient } from "./patient/PatientDashboard";
+
+export type User = Patient | Doctor;
 
 export function Dashboard() {
   const navigate = useNavigate();
+  const [user, setUser] = useState<User | null>(null);
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-4xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-gray-600 mt-2">Welcome to SimplePrex</p>
-          </div>
-          <Button variant="outline" onClick={() => navigate("/signin")}>
-            Sign Out
-          </Button>
-        </div>
+  useEffect(() => {
+    const rawUser = localStorage.getItem("user");
+    if (!rawUser) {
+      navigate("/signin");
+      return;
+    }
+    try {
+      setUser(JSON.parse(rawUser));
+    } catch {
+      navigate("/signin");
+    }
+  }, [navigate]);
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Your Profile</CardTitle>
-              <CardDescription>Manage your account information</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">Profile settings coming soon...</p>
-            </CardContent>
-          </Card>
+  if (!user) return null;
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Appointments</CardTitle>
-              <CardDescription>View your upcoming appointments</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">Appointments coming soon...</p>
-            </CardContent>
-          </Card>
+  const handleSignOut = () => {
+    localStorage.removeItem("user");
+    navigate("/signin");
+  };
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Medical Records</CardTitle>
-              <CardDescription>Access your health information</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">Medical records coming soon...</p>
-            </CardContent>
-          </Card>
+  if (user.role === "patient") {
+    return <PatientDashboard user={user} onSignOut={handleSignOut} />;
+  }
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Messages</CardTitle>
-              <CardDescription>
-                Communicate with healthcare providers
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">Messages coming soon...</p>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    </div>
-  );
+  if (user.role === "doctor") {
+    return <DoctorDashboard user={user} onSignOut={handleSignOut} />;
+  }
+
+  return <div>Unknown role</div>;
 }

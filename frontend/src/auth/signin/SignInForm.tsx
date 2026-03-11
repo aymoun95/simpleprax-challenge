@@ -42,11 +42,38 @@ export function SignInForm() {
     },
   });
 
-  function onSubmit() {
-    toast("Signed in successfully!", {
-      position: "bottom-right",
-    });
-    navigate("/dashboard");
+  async function onSubmit(data: z.infer<typeof authSchema>) {
+    try {
+      const response = await fetch("/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        return toast.error(errorData.error || "Failed to sign in", {
+          position: "bottom-right",
+        });
+      }
+
+      const responseData = await response.json();
+      localStorage.setItem("user", JSON.stringify(responseData));
+
+      toast.success("Signed in successfully!", {
+        position: "bottom-right",
+      });
+      navigate("/dashboard");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "An error occurred",
+        {
+          position: "bottom-right",
+        },
+      );
+    }
   }
 
   return (

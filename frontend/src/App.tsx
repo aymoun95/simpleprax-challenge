@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/sonner";
 import {
   Navigate,
   Route,
@@ -11,6 +12,7 @@ import { Dashboard } from "./dashboard/Dashboard";
 function App() {
   return (
     <Router>
+      <Toaster />
       <Routes>
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn />} />
