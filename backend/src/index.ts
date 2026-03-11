@@ -20,6 +20,11 @@ app.use("/auth", authRoutes);
 app.use("/feedback", feedbackRoutes);
 app.use("/doctor", doctorRoutes);
 
+app.use((err: Error, req: Request, res: Response) => {
+  console.error(err.stack);
+  res.status(500).json({ error: "Something went wrong" });
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
